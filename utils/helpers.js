@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken');
+const dayjs = require('dayjs');
+
 const { getAsignaturasByProfesorId } = require('../models/profesor-asignatura.model');
 const { getPuntuacionMediaByProfesorID, getMejorOpinionByProfesorID } = require('../models/clase.model');
 
@@ -18,8 +21,15 @@ const addAsignaturasValoracionesAProfesores = async (profesores) => {
     } catch (error) {
         return error.message;
     }
-
-
 }
 
-module.exports = { addAsignaturasValoracionesAProfesores };
+const createToken = (usuario) => {
+    const dataToken = {
+        usuario_id: usuario.id,
+        usuario_rol: usuario.rol,
+        exp: dayjs().add(1, 'month').unix()
+    }
+    return jwt.sign(dataToken, 'Lluvia de ideas');
+}
+
+module.exports = { addAsignaturasValoracionesAProfesores, createToken };

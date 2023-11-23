@@ -2,10 +2,10 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 
 const { getUsuarioById, getUsuarioByMail, create: createUser } = require('../../models/usuario.model');
-const { create: createProfesor, getProfesorById } = require('./../../models/profesor.model')
-const { create: createAsignaturaProfesor } = require('./../../models/profesor-asignatura.model');
+const { create: createProfesor, getProfesorById } = require('../../models/profesor.model')
+const { create: createAsignaturaProfesor } = require('../../models/profesor-asignatura.model');
 const { getAsignaturaById } = require('../../models/asignatura.model');
-const { createToken } = require('./../../utils/helpers');
+const { createToken } = require('../../utils/helpers');
 
 router.post('/login', async (req, res) => {
 

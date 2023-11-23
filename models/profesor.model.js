@@ -6,4 +6,11 @@ const getCiudadesConProfesores = () => {
     return db.query('SELECT DISTINCT ciudad FROM usuarios WHERE rol="profe"');
 }
 
-module.exports = { getProfesoresPublic, getCiudadesConProfesores };
+const getProfesorById = (profesorId) => {
+    return db.query('SELECT * FROM profesores WHERE id=?', [profesorId]);
+}
+
+const create = (usuarioId, { experiencia, precio }) => {
+    return db.query('INSERT INTO profesores (experiencia, precio, usuario_id)  VALUES (?, ?, ?)', [experiencia, precio, usuarioId]);
+}
+module.exports = { getProfesoresPublic, getCiudadesConProfesores, getProfesorById, create };

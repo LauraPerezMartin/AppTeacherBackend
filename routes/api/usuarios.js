@@ -71,8 +71,8 @@ router.post('/registro', async (req, res) => {
                 asignaturas.push(result[0].nombre);
             }
         }
-
-        usuario = { ...usuario, asignaturas };
+        usuario.asignaturas = asignaturas;
+        //usuario = { ...usuario, asignaturas };
         res.json(usuario);
     } catch (error) {
         res.status(503).json({ Error: error.message });

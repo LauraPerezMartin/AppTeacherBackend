@@ -23,6 +23,20 @@ const addAsignaturasValoracionesAProfesores = async (profesores) => {
     }
 }
 
+const addAsignaturasAProfesores = async (profesores) => {
+    try {
+        for (let profesor of profesores) {
+            const [asignaturas] = await getAsignaturasByProfesorId(profesor.id);
+
+            profesor.asignaturas = asignaturas;
+        }
+
+        return profesores;
+    } catch (error) {
+        return error.message;
+    }
+}
+
 const createToken = (usuario) => {
     const dataToken = {
         usuario_id: usuario.id,
@@ -32,4 +46,4 @@ const createToken = (usuario) => {
     return jwt.sign(dataToken, 'Lluvia de ideas');
 }
 
-module.exports = { addAsignaturasValoracionesAProfesores, createToken };
+module.exports = { addAsignaturasValoracionesAProfesores, addAsignaturasAProfesores, createToken };

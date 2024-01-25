@@ -6,6 +6,7 @@ const { create: createProfesor, getProfesorById } = require('../../models/profes
 const { create: createAsignaturaProfesor } = require('../../models/profesor-asignatura.model');
 const { getAsignaturaById } = require('../../models/asignatura.model');
 const { createToken } = require('../../utils/helpers');
+const { checkToken } = require('../../utils/middleware');
 
 router.post('/login', async (req, res) => {
 
@@ -79,5 +80,11 @@ router.post('/registro', async (req, res) => {
     }
 
 });
+
+router.get('/perfil', checkToken, (req, res) => {
+
+    delete req.usuario.password;
+    res.json(req.usuario);
+})
 
 module.exports = router;

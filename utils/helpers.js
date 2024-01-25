@@ -5,7 +5,7 @@ const { getAsignaturasByProfesorId } = require('../models/profesor-asignatura.mo
 const { getPuntuacionMediaByProfesorID, getMejorOpinionByProfesorID } = require('../models/clase.model');
 
 const addAsignaturasValoracionesAProfesores = async (profesores) => {
-    //para cada profesor obtenermos asignatura y valoracion media y mejor opinion 
+    //para cada profesor obtenermos asignaturas, valoracion media y mejor opinion 
     try {
         for (let profesor of profesores) {
             const [result] = await getAsignaturasByProfesorId(profesor.id);
@@ -24,6 +24,7 @@ const addAsignaturasValoracionesAProfesores = async (profesores) => {
 }
 
 const addAsignaturasAProfesores = async (profesores) => {
+    //para cada profesor obtenermos asignaturas
     try {
         for (let profesor of profesores) {
             const [asignaturas] = await getAsignaturasByProfesorId(profesor.id);
@@ -43,7 +44,8 @@ const createToken = (usuario) => {
         usuario_rol: usuario.rol,
         exp: dayjs().add(1, 'month').unix()
     }
-    return jwt.sign(dataToken, 'Lluvia de ideas');
+
+    return jwt.sign(dataToken, process.env.KEY_TOKEN);
 }
 
 module.exports = { addAsignaturasValoracionesAProfesores, addAsignaturasAProfesores, createToken };

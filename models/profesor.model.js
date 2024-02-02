@@ -7,7 +7,7 @@ const getCiudadesConProfesores = () => {
 }
 
 const getAllProfesores = () => {
-    return db.query('SELECT u.*, p.experiencia, p.precio FROM usuarios AS u, profesores AS p WHERE u.rol="profe" AND u.id = p.usuario_id AND p.validado=1 AND u.borrado=0');
+    return db.query('SELECT u.*, p.experiencia, p.precio, p.validado FROM usuarios AS u, profesores AS p WHERE u.rol="profe" AND u.id = p.usuario_id');
 }
 
 const getProfesorByUsuarioId = (usuarioId) => {

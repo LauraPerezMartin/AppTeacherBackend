@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const dayjs = require('dayjs');
+const NodeGeocoder = require('node-geocoder');
 
 const { getAsignaturasByProfesorId } = require('../models/profesor-asignatura.model');
 const { getPuntuacionMediaByProfesorID, getMejorOpinionByProfesorID } = require('../models/clase.model');
@@ -32,4 +33,25 @@ const createToken = (usuario) => {
     return jwt.sign(dataToken, 'Lluvia de ideas');
 }
 
-module.exports = { addAsignaturasValoracionesAProfesores, createToken };
+const getCoordenadas = async (ciudad, direccion) => {
+    const options = {
+        provider: 'openstreetmap',
+        city: ciudad,
+        country: 'España',
+        countrycodes: 'es',
+        layer: 'address',
+        format: 'json',
+        limit: 1
+
+    }
+    const geocoder = NodeGeocoder(options);
+    const direccionCompleta = `${direccion}, ${ciudad}, España`;
+    try {
+        const res = await geocoder.geocode(direccionCompleta);
+        return res[0];
+    } catch (error) {
+        return error.message;
+    }
+}
+
+module.exports = { addAsignaturasValoracionesAProfesores, createToken, getCoordenadas };

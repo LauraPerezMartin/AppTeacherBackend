@@ -5,7 +5,7 @@ const { getUsuarioById, getUsuarioByMail, create: createUser } = require('../../
 const { create: createProfesor, getProfesorById } = require('../../models/profesor.model')
 const { create: createAsignaturaProfesor } = require('../../models/profesor-asignatura.model');
 const { getAsignaturaById } = require('../../models/asignatura.model');
-const { createToken } = require('../../utils/helpers');
+const { createToken, getCoordenadas } = require('../../utils/helpers');
 
 router.post('/login', async (req, res) => {
 
@@ -33,10 +33,13 @@ router.post('/login', async (req, res) => {
 
 router.post('/registro', async (req, res) => {
     req.body.password = bcrypt.hashSync(req.body.password, 8); //encriptamos password
-    req.body.latitud = 0;
-    req.body.longitud = 0;
 
     try {
+        const coordenadas = await getCoordenadas(req.body.ciudad, req.body.direccion);
+        //obtenemos coordenadar por direccion si devuelve cordenadas se las pasamos si no la pasamos 0
+        req.body.latitud = (coordenadas) ? coordenadas.latitude : 0;
+        req.body.longitud = (coordenadas) ? coordenadas.longitude : 0;
+
         const [result] = await createUser(req.body);//creamos registro en la tabla usuarios
         const [usuarioArr] = await getUsuarioById(result.insertId);
         let usuario = usuarioArr[0];
@@ -77,7 +80,6 @@ router.post('/registro', async (req, res) => {
     } catch (error) {
         res.status(503).json({ Error: error.message });
     }
-
 });
 
 module.exports = router;

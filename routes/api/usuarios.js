@@ -5,12 +5,7 @@ const { getUsuarioById, getUsuarioByMail, create: createUser } = require('../../
 const { create: createProfesor, getProfesorById } = require('../../models/profesor.model')
 const { create: createAsignaturaProfesor } = require('../../models/profesor-asignatura.model');
 const { getAsignaturaById } = require('../../models/asignatura.model');
-<<<<<<< HEAD
-const { createToken } = require('../../utils/helpers');
-const { checkToken } = require('../../utils/middleware');
-=======
 const { createToken, getCoordenadas } = require('../../utils/helpers');
->>>>>>> feature-users
 
 router.post('/login', async (req, res) => {
 

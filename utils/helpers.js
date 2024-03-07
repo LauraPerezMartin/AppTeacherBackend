@@ -49,9 +49,6 @@ const createToken = (usuario) => {
     return jwt.sign(dataToken, process.env.KEY_TOKEN);
 }
 
-<<<<<<< HEAD
-module.exports = { addAsignaturasValoracionesAProfesores, addAsignaturasAProfesores, createToken };
-=======
 const getCoordenadas = async (ciudad, direccion) => {
     const options = {
         provider: 'openstreetmap',
@@ -73,5 +70,4 @@ const getCoordenadas = async (ciudad, direccion) => {
     }
 }
 
-module.exports = { addAsignaturasValoracionesAProfesores, createToken, getCoordenadas };
->>>>>>> feature-users
+module.exports = { addAsignaturasValoracionesAProfesores, addAsignaturasAProfesores, createToken, getCoordenadas };

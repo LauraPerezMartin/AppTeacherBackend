@@ -6,6 +6,7 @@ const { create: createProfesor, getProfesorById } = require('../../models/profes
 const { create: createAsignaturaProfesor } = require('../../models/profesor-asignatura.model');
 const { getAsignaturaById } = require('../../models/asignatura.model');
 const { createToken, getCoordenadas } = require('../../utils/helpers');
+const { checkToken } = require('../../utils/middleware');
 
 router.post('/login', async (req, res) => {
 

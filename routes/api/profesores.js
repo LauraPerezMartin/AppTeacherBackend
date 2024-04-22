@@ -27,9 +27,23 @@ router.put('/', async (req, res) => {
 
         res.json(profesor);
     } catch (error) {
-        res.status(503).json({ 'Error': 'El usuario no existe' })
+        res.status(503).json({ 'Error': 'El usuario no existe' });
     }
 });
+
+router.get('/perfil', async (req, res) => {
+    usuarioId = req.usuario.id;
+    try {
+        const [result] = await getProfesorByUsuarioId(usuarioId);
+        const [profesor] = await addAsignaturasAProfesores(result);
+        delete profesor.password;
+
+        res.json(profesor);
+    } catch (error) {
+        res.status(503).json({ 'Error': 'El usuario no existe' });
+    }
+
+})
 
 
 module.exports = router;

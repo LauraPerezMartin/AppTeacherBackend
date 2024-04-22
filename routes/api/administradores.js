@@ -1,8 +1,7 @@
+const router = require('express').Router();
 const { getAllProfesores, getProfesorByUsuarioId, updateValidacion } = require('../../models/profesor.model');
 const { deleteById } = require('../../models/usuario.model');
 const { addAsignaturasAProfesores } = require('../../utils/helpers');
-
-const router = require('express').Router();
 
 router.get('/', async (req, res) => {
     //Obtenemos el listado de todos los profesores con sus asignaturas correspondientes

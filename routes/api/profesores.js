@@ -11,7 +11,7 @@ router.put('/', async (req, res) => {
         // si la dirección es distinta obtenemos las nuevas coordenadas
         if (req.usuario.direccion != req.body.direccion) {
             const coordenadas = await getCoordenadas(req.body.ciudad, req.body.direccion);
-            console.log(coordenadas);
+
             req.body.latitud = (coordenadas) ? coordenadas.latitude : 0;
             req.body.longitud = (coordenadas) ? coordenadas.longitude : 0;
         }
@@ -42,8 +42,6 @@ router.get('/perfil', async (req, res) => {
     } catch (error) {
         res.status(503).json({ 'Error': 'El usuario no existe' });
     }
-
-})
-
+});
 
 module.exports = router;

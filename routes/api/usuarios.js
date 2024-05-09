@@ -1,11 +1,11 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 
-const { getUsuarioById, getUsuarioByMail, create: createUser } = require('../../models/usuario.model');
-const { create: createProfesor, getProfesorById } = require('../../models/profesor.model')
+const { getUsuarioById, getUsuarioByMail, create: createUser, update: updateUsuario } = require('../../models/usuario.model');
+const { create: createProfesor, getProfesorById, getProfesorByUsuarioId, update: updatoProfesor } = require('../../models/profesor.model')
 const { create: createAsignaturaProfesor } = require('../../models/profesor-asignatura.model');
 const { getAsignaturaById } = require('../../models/asignatura.model');
-const { createToken, getCoordenadas } = require('../../utils/helpers');
+const { createToken, getCoordenadas, addAsignaturasAProfesores } = require('../../utils/helpers');
 const { checkToken } = require('../../utils/middleware');
 
 router.post('/login', async (req, res) => {
@@ -83,10 +83,62 @@ router.post('/registro', async (req, res) => {
     }
 });
 
-router.get('/perfil', checkToken, (req, res) => {
+router.get('/perfil', checkToken, async (req, res) => {
 
-    delete req.usuario.password;
-    res.json(req.usuario);
+    if (req.usuario.rol != 'profe') {
+        //si no es un profesor pasamos el usuario qur tenemos guardado
+        delete req.usuario.password;
+        return res.json(req.usuario);
+    }
+
+    try {
+
+        //si es un profesor pasamos el usuario profesor con sus asignaturas
+        const [result] = await getProfesorByUsuarioId(req.usuario.id);
+        const [profesor] = await addAsignaturasAProfesores(result);
+        delete profesor.password;
+        res.json(profesor);
+
+    } catch (error) {
+        res.status(503).json({ Error: error.message });
+    }
+});
+
+router.put('/update', checkToken, async (req, res) => {
+    const rol = req.usuario.rol;
+    const usuarioId = req.usuario.id;
+    let usuario = {};
+
+    try {
+        // si la dirección es distinta obtenemos las nuevas coordenadas
+        if (req.usuario.direccion != req.body.direccion) {
+            const coordenadas = await getCoordenadas(req.body.ciudad, req.body.direccion);
+
+            req.body.latitud = (coordenadas) ? coordenadas.latitude : 0;
+            req.body.longitud = (coordenadas) ? coordenadas.longitude : 0;
+        }
+
+        if (rol == 'profe') {
+            // si es profesor actualizamos datos de tabla usuarios y profesores
+            await updatoProfesor(usuarioId, req.body);
+            const [result] = await getProfesorByUsuarioId(usuarioId);
+            [usuario] = await addAsignaturasAProfesores(result);
+
+        } else {
+            // si no en profesor actualizamos solo los datos de usuario
+            await updateUsuario(usuarioId, req.body);
+            const [result] = await getUsuarioById(usuarioId);
+            usuario = result[0];
+        }
+
+        req.usuario = usuario; //guardamos el usuario actualizado 
+        delete req.usuario.password;
+
+        res.json(usuario);
+
+    } catch (error) {
+        res.status(503).json({ Error: error.message });
+    }
 })
 
 module.exports = router;

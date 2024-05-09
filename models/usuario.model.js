@@ -16,8 +16,12 @@ const create = ({ nombre, apellidos, username, email, password, telefono, direcc
         [nombre, apellidos, username, email, password, telefono, direccion, ciudad, latitud, longitud, imagen, edad, fecha_nacimiento, genero, dni, rol]);
 }
 
+const update = (usuarioId, { nombre, apellidos, username, telefono, direccion, ciudad, latitud, longitud, imagen, edad, fecha_nacimiento, genero }) => {
+    return db.query('UPDATE usuarios AS u  SET u.nombre=?, u.apellidos=?, u.username=?, u.telefono=?, u.direccion=?, u.ciudad=?, u.latitud=?, u.longitud=?, u.imagen=?, u.edad=?, u.fecha_nacimiento=?, u.genero=? WHERE u.id=?', [nombre, apellidos, username, telefono, direccion, ciudad, latitud, longitud, imagen, edad, fecha_nacimiento, genero, usuarioId]);
+}
+
 const deleteById = (usuarioId) => {
     return db.query('UPDATE usuarios SET borrado=1 WHERE id=?', [usuarioId]);
 }
 
-module.exports = { getUsuarioById, getUsuarioByMail, getUsuariosByRol, create, deleteById };
+module.exports = { getUsuarioById, getUsuarioByMail, getUsuariosByRol, create, update, deleteById };

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 
 const { getUsuarioById, getUsuarioByMail, create: createUser, update: updateUsuario } = require('../../models/usuario.model');
-const { create: createProfesor, getProfesorById, getProfesorByUsuarioId, update: updatoProfesor } = require('../../models/profesor.model')
+const { create: createProfesor, getProfesorByUsuarioId, update: updatoProfesor } = require('../../models/profesor.model')
 const { create: createAsignaturaProfesor } = require('../../models/profesor-asignatura.model');
 const { getAsignaturaById } = require('../../models/asignatura.model');
 const { createToken, getCoordenadas, addAsignaturasAProfesores } = require('../../utils/helpers');
@@ -38,8 +38,8 @@ router.post('/registro', async (req, res) => {
     try {
         const coordenadas = await getCoordenadas(req.body.ciudad, req.body.direccion);
         //obtenemos coordenadar por direccion si devuelve cordenadas se las pasamos si no la pasamos 0
-        req.body.latitud = (coordenadas) ? coordenadas.latitude : 0;
-        req.body.longitud = (coordenadas) ? coordenadas.longitude : 0;
+        req.body.latitud = (coordenadas.latitude) ? coordenadas.latitude : 0;
+        req.body.longitud = (coordenadas.longitude) ? coordenadas.longitude : 0;
 
         const [result] = await createUser(req.body);//creamos registro en la tabla usuarios
         const [usuarioArr] = await getUsuarioById(result.insertId);
@@ -51,7 +51,7 @@ router.post('/registro', async (req, res) => {
 
         //Si el rol el profe creamos el registro en la tabla profesores
         const [resultProfesor] = await createProfesor(usuario.id, req.body);
-        const [profesorArr] = await getProfesorById(resultProfesor.insertId)
+        const [profesorArr] = await getProfesorByUsuarioId(usuario.id)
         const profesor = profesorArr[0];
 
         delete profesor.id;
